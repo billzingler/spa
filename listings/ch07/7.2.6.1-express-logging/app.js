@@ -15,13 +15,16 @@
 var
   http    = require( 'http'    ),
   express = require( 'express' ),
+  morgan  = require( 'morgan' ),
+
+  loggerFmt = ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]',
 
   app     = express(),
   server  = http.createServer( app );
 // ------------- END MODULE SCOPE VARIABLES ---------------
 
 // ------------- BEGIN SERVER CONFIGURATION ---------------
-app.use( express.logger() );
+app.use( morgan( loggerFmt ) );
 app.get( '/', function ( request, response ) {
   response.send( 'Hello Express' );
 });

@@ -1,7 +1,12 @@
-{ "name"    : "SPA",
-  "version" : "0.0.3",
-  "private" : true,
-  "dependencies" : {
-    "express"   : "3.2.x"
+{
+  "name": "SPA",
+  "version": "0.0.3",
+  "private": true,
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "errorhandler": "^1.5.0",
+    "express": "^4.15.2",
+    "method-override": "^2.3.8",
+    "morgan": "^1.8.1"
   }
 }

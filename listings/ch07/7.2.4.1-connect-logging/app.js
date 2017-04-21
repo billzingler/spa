@@ -14,6 +14,9 @@ var
   connectHello, server,
   http     = require( 'http'    ),
   connect  = require( 'connect' ),
+  morgan  = require( 'morgan' ),
+
+  loggerFmt = ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]',
 
   app      = connect(),
   bodyText = 'Hello Connect';
@@ -24,7 +27,7 @@ connectHello = function ( request, response, next ) {
 };
 
 app
-  .use( connect.logger() )
+  .use( morgan( loggerFmt ) )
   .use( connectHello     );
 server = http.createServer( app );
 

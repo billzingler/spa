@@ -13,9 +13,16 @@
 // ------------ BEGIN MODULE SCOPE VARIABLES --------------
 'use strict';
 var
-  http    = require( 'http'     ),
-  express = require( 'express'  ),
+  http    = require( 'http'    ),
+  express = require( 'express' ),
+  morgan  = require( 'morgan' ),
+  bodyParser = require( 'body-parser' ),
+  methodOverride = require( 'method-override' ),
+  errorHandler = require( 'errorhandler' ),
   routes  = require( './routes' ),
+
+  loggerFmt = ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]',
+  env = process.env.NODE_ENV || 'development',
 
   app     = express(),
   server  = http.createServer( app );
@@ -24,24 +31,22 @@ routes();
 // ------------- END MODULE SCOPE VARIABLES ---------------
 
 // ------------- BEGIN SERVER CONFIGURATION ---------------
-app.configure( function () {
-  app.use( express.bodyParser() );
-  app.use( express.methodOverride() );
-  app.use( express.static( __dirname + '/public' ) );
-  app.use( app.router );
-});
+app.use( bodyParser.json() );
+app.use( bodyParser.urlencoded( { extended : true } ) );
+app.use( methodOverride() );
+app.use( express.static( __dirname + '/public' ) );
 
-app.configure( 'development', function () {
-  app.use( express.logger() );
-  app.use( express.errorHandler({
+if ('development' == env) {
+  app.use( morgan( loggerFmt ) );
+  app.use( errorHandler({
     dumpExceptions : true,
     showStack      : true
-  }) );
-});
+  }));
+}
 
-app.configure( 'production', function () {
+if ('production' == env) {
   app.use( express.errorHandler() );
-});
+}
 
 // all configurations below are for routes
 app.get( '/', function ( request, response ) {

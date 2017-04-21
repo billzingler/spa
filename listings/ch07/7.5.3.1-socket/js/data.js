@@ -1,1 +1,1 @@
-var b = 'SPA';
+var b = 'more stuff';

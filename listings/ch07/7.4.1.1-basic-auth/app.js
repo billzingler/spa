@@ -13,34 +13,43 @@
 // ------------ BEGIN MODULE SCOPE VARIABLES --------------
 'use strict';
 var
-  http    = require( 'http'     ),
-  express = require( 'express'  ),
+  http    = require( 'http'    ),
+  express = require( 'express' ),
+  morgan  = require( 'morgan' ),
+  bodyParser = require( 'body-parser' ),
+  methodOverride = require( 'method-override' ),
+  basicAuth = require( 'express-basic-auth' ),
+  errorHandler = require( 'errorhandler' ),
   routes  = require( './routes' ),
+
+  loggerFmt = ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]',
+  env = process.env.NODE_ENV || 'development',
 
   app     = express(),
   server  = http.createServer( app );
 // ------------- END MODULE SCOPE VARIABLES ---------------
 
 // ------------- BEGIN SERVER CONFIGURATION ---------------
-app.configure( function () {
-  app.use( express.bodyParser() );
-  app.use( express.methodOverride() );
-  app.use( express.basicAuth( 'user', 'spa' ) );
-  app.use( express.static( __dirname + '/public' ) );
-  app.use( app.router );
-});
+app.use( bodyParser.json() );
+app.use( bodyParser.urlencoded( { extended : true } ) );
+app.use( methodOverride() );
+app.use(basicAuth( {
+  users: { 'user': 'spa' },
+  challenge: true
+  } ) );
+app.use( express.static( __dirname + '/public' ) );
 
-app.configure( 'development', function () {
-  app.use( express.logger() );
-  app.use( express.errorHandler({
+if ('development' == env) {
+  app.use( morgan( loggerFmt ) );
+  app.use( errorHandler({
     dumpExceptions : true,
     showStack      : true
-  }) );
-});
+  }));
+}
 
-app.configure( 'production', function () {
-  app.use( express.errorHandler() );
-});
+if ('production' == env) {
+  app.use( errorHandler() );
+}
 
 routes.configRoutes( app, server );
 // -------------- END SERVER CONFIGURATION ----------------

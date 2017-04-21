@@ -50,18 +50,16 @@ setWatch = function ( url_path, file_type ) {
 // ---------------- END UTILITY METHODS -------------------
 
 // ------------- BEGIN SERVER CONFIGURATION ---------------
-app.configure( function () {
   app.use( function ( request, response, next ) {
-    if ( request.url.indexOf( '/js/'  ) >= 0 ) {
-      setWatch( request.url, 'script' );
-    }
-    else if ( request.url.indexOf( '/css/' ) >= 0 ) {
-      setWatch( request.url, 'stylesheet' );
-    }
-    next();
-  });
-  app.use( express.static( __dirname + '/' ) );
+  if ( request.url.indexOf( '/js/'  ) >= 0 ) {
+    setWatch( request.url, 'script' );
+  }
+  else if ( request.url.indexOf( '/css/' ) >= 0 ) {
+    setWatch( request.url, 'stylesheet' );
+  }
+  next();
 });
+app.use( express.static( __dirname + '/' ) );
 
 app.get( '/', function ( request, response ) {
   response.redirect( '/socket.html' );

@@ -1,7 +1,9 @@
-{ "name"    : "SPA",
-  "version" : "0.0.3",
-  "private" : true,
-  "dependencies" : {
-    "connect"   : "2.x.x"
+{
+  "name": "SPA",
+  "version": "0.0.3",
+  "private": true,
+  "dependencies": {
+    "connect": "^3.6.0",
+    "morgan": "^1.8.1"
   }
 }
